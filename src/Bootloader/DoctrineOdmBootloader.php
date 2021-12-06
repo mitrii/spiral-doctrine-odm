@@ -15,6 +15,7 @@ use Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper;
 use Mitrii\Spiral\Doctrine\ODM\Config\MongoConfig;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\DirectoriesInterface;
+use Spiral\Boot\FinalizerInterface;
 use Spiral\Console\Console;
 use Spiral\Core\Container;
 use MongoDB\Client;
@@ -29,7 +30,7 @@ class DoctrineOdmBootloader extends Bootloader
 
     protected const DEPENDENCIES = [];
 
-    public function boot(Container $container, Console $console): void
+    public function boot(Container $container, Console $console, FinalizerInterface $finalizer): void
     {
         $container->bindSingleton(DocumentManager::class, function (DirectoriesInterface $dirs, Client $client, MongoConfig $mongoConfig)
         {
@@ -50,6 +51,12 @@ class DoctrineOdmBootloader extends Bootloader
             new DocumentManagerHelper($container->get(DocumentManager::class)),
             'documentManager'
         );
+
+        $finalizer->addFinalizer(function (DocumentManager $documentManager)
+        {
+            $documentManager->close();
+        });
+
     }
 
 
