@@ -1,0 +1,25 @@
+{
+  "name": "mitrii/spiral-doctrine-odm",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "mitrii",
+      "email": "p.mitrii@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4.0",
+    "doctrine/mongodb-odm": "^2.3",
+    "spiral/framework": "^2.8"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mitrii\\Spiral\\Doctrine\\ODM\\": "src/"
+    }
+  }
+}
