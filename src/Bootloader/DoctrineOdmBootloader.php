@@ -54,7 +54,7 @@ class DoctrineOdmBootloader extends Bootloader
 
         $finalizer->addFinalizer(function (DocumentManager $documentManager)
         {
-            $documentManager->close();
+            $documentManager->clear();
         });
 
     }
