@@ -30,9 +30,16 @@ class DoctrineOdmBootloader extends Bootloader
 
     protected const DEPENDENCIES = [];
 
-    public function boot(Container $container, Console $console, FinalizerInterface $finalizer): void
+    public function boot(Container $container): void
     {
-        $container->bindSingleton(DocumentManager::class, function (DirectoriesInterface $dirs, Client $client, DoctrineOdmConfig $config)
+        $container->bindSingleton(DocumentManager::class, function (
+            DirectoriesInterface $dirs,
+            Client $client,
+            DoctrineOdmConfig $config,
+            FinalizerInterface $finalizer,
+            Console $console,
+            Container $container
+        )
         {
             $doctrineConfig = new Configuration();
             $doctrineConfig->setProxyDir($dirs->get('root') . $config->getProxyDir());
@@ -48,16 +55,16 @@ class DoctrineOdmBootloader extends Bootloader
 
             $doctrineConfig->setDefaultDocumentRepositoryClassName($config->getDefaultRepositoryClassName());
 
+            $finalizer->addFinalizer(function (DocumentManager $documentManager) {
+                $documentManager->clear();
+            });
+
+            $console->getApplication()->getHelperSet()->set(
+                new DocumentManagerHelper($container->get(DocumentManager::class)),
+                'documentManager'
+            );
+
             return DocumentManager::create($client, $doctrineConfig);
-        });
-
-        $console->getApplication()->getHelperSet()->set(
-            new DocumentManagerHelper($container->get(DocumentManager::class)),
-            'documentManager'
-        );
-
-        $finalizer->addFinalizer(function (DocumentManager $documentManager) {
-            $documentManager->clear();
         });
 
     }
