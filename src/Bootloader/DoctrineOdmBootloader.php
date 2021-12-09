@@ -30,13 +30,12 @@ class DoctrineOdmBootloader extends Bootloader
 
     protected const DEPENDENCIES = [];
 
-    public function boot(Container $container, Console $console): void
+    public function boot(Container $container, Console $console, FinalizerInterface $finalizer): void
     {
         $container->bindSingleton(DocumentManager::class, function (
             DirectoriesInterface $dirs,
             Client $client,
-            DoctrineOdmConfig $config,
-            FinalizerInterface $finalizer
+            DoctrineOdmConfig $config
         )
         {
             $doctrineConfig = new Configuration();
@@ -53,12 +52,11 @@ class DoctrineOdmBootloader extends Bootloader
 
             $doctrineConfig->setDefaultDocumentRepositoryClassName($config->getDefaultRepositoryClassName());
 
-            $finalizer->addFinalizer(function (DocumentManager $documentManager) {
-                $documentManager->clear();
-            });
-
-
             return DocumentManager::create($client, $doctrineConfig);
+        });
+
+        $finalizer->addFinalizer(function (DocumentManager $documentManager) {
+            $documentManager->clear();
         });
 
         $console->getApplication()->getHelperSet()->set(
