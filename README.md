@@ -1,5 +1,49 @@
 ## Doctrine ODM connector for Spiral Framework
 
+### Configuration
+
+Create config file in `app/config/doctrine_odm.php`:
+
+Mongo uri and options details [see here](https://www.php.net/manual/en/mongodb-driver-manager.construct.php#refsect1-mongodb-driver-manager.construct-parameters) 
+
+#### Minimal config:
+```php
+<?php
+
+return [
+    'uri' => 'mongodb://mongodb:27017',
+];
+
+
+```
+
+
+#### All config options:
+```php
+<?php
+
+return [
+    'uri' => 'mongodb://mongodb:27017',
+    'options' => [],
+    
+    'defaultDatabase' =>  'db',
+    
+    'typeMap' => DocumentManager::CLIENT_TYPEMAP,
+    
+    'proxyDir' => '/runtime/doctrine/proxies',
+    'proxyNamespace' => 'DoctrineProxies',
+    'autoGenerateProxyClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
+    
+    'hydratorDir' => '/runtime/doctrine/hydrators',
+    'hydratorNamespace' => 'DoctrineHydrators',
+    'autoGenerateHydratorClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
+    
+    'defaultRepositoryClassName' => DocumentRepository::class,
+];
+
+
+```
+
 ### Add Doctrine console commands
 
 ```php

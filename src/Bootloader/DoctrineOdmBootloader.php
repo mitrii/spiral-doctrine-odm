@@ -12,7 +12,7 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper;
-use Mitrii\Spiral\Doctrine\ODM\Config\MongoConfig;
+use Mitrii\Spiral\Doctrine\ODM\Config\DoctrineOdmConfig;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\FinalizerInterface;
@@ -32,19 +32,23 @@ class DoctrineOdmBootloader extends Bootloader
 
     public function boot(Container $container, Console $console, FinalizerInterface $finalizer): void
     {
-        $container->bindSingleton(DocumentManager::class, function (DirectoriesInterface $dirs, Client $client, MongoConfig $mongoConfig)
+        $container->bindSingleton(DocumentManager::class, function (DirectoriesInterface $dirs, Client $client, DoctrineOdmConfig $config)
         {
-            $config = new Configuration();
-            $config->setProxyDir($dirs->get('root') . '/app/src/Proxy');
-            $config->setProxyNamespace('Proxy');
+            $doctrineConfig = new Configuration();
+            $doctrineConfig->setProxyDir($dirs->get('root') . $config->getProxyDir());
+            $doctrineConfig->setProxyNamespace($config->getProxyNamespace());
+            $doctrineConfig->setAutoGenerateProxyClasses($config->getAutoGenerateProxyClasses());
 
-            $config->setHydratorDir($dirs->get('root') . '/app/src/Hydrator');
-            $config->setHydratorNamespace('Hydrator');
+            $doctrineConfig->setHydratorDir($dirs->get('root') . $config->getHydratorDir());
+            $doctrineConfig->setHydratorNamespace($config->getHydratorNamespace());
+            $doctrineConfig->setAutoGenerateHydratorClasses($config->getAutoGenerateHydratorClasses());
 
-            $config->setDefaultDB($mongoConfig->getDatabase());
-            $config->setMetadataDriverImpl(AnnotationDriver::create($dirs->get('root') . '/app/src/Document'));
+            $doctrineConfig->setDefaultDB($config->getDefaultDatabase());
+            $doctrineConfig->setMetadataDriverImpl(AnnotationDriver::create($dirs->get('root') . $config->getDocumentsDir()));
 
-            return DocumentManager::create($client, $config);
+            $doctrineConfig->setDefaultDocumentRepositoryClassName($config->getDefaultRepositoryClassName());
+
+            return DocumentManager::create($client, $doctrineConfig);
         });
 
         $console->getApplication()->getHelperSet()->set(
@@ -52,21 +56,20 @@ class DoctrineOdmBootloader extends Bootloader
             'documentManager'
         );
 
-        $finalizer->addFinalizer(function (DocumentManager $documentManager)
-        {
+        $finalizer->addFinalizer(function (DocumentManager $documentManager) {
             $documentManager->clear();
         });
 
     }
 
 
-    private function initMongoClient(MongoConfig $mongoConfig): Client
+    private function initMongoClient(DoctrineOdmConfig $config): Client
     {
         return new Client(
-            $mongoConfig->getHost(),
-            $mongoConfig->getUriOptions(),
+            $config->getUri(),
+            $config->getUriOptions(),
             [
-                'typeMap' => DocumentManager::CLIENT_TYPEMAP
+                'typeMap' => $config->getTypeMap(),
             ]
         );
     }
