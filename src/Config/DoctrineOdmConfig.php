@@ -23,9 +23,11 @@ class DoctrineOdmConfig extends InjectableConfig
      */
     protected $config = [
         'uri' => 'mongodb://mongodb:27017',
-        'options' => [],
+        'uriOptions' => [],
         'defaultDatabase' =>  'db',
-        'typeMap' => DocumentManager::CLIENT_TYPEMAP,
+        'driverOptions' => [
+            'typeMap' => DocumentManager::CLIENT_TYPEMAP,
+        ],
         'proxyDir' => '/runtime/doctrine/proxies',
         'proxyNamespace' => 'DoctrineProxies',
         'autoGenerateProxyClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
@@ -42,17 +44,12 @@ class DoctrineOdmConfig extends InjectableConfig
 
     public function getUriOptions(): array
     {
-        return $this->offsetExists('options') ? $this->offsetGet('options') : [];
+        return $this->offsetExists('uriOptions') ? $this->offsetGet('uriOptions') : [];
     }
 
     public function getDefaultDatabase(): string
     {
         return $this->offsetExists('defaultDatabase') ? $this->offsetGet('defaultDatabase') : 'db';
-    }
-
-    public function getTypeMap(): array
-    {
-        return $this->offsetExists('typeMap') ? $this->offsetGet('typeMap') : DocumentManager::CLIENT_TYPEMAP;
     }
 
     public function getDocumentsDir(): string
@@ -93,5 +90,12 @@ class DoctrineOdmConfig extends InjectableConfig
     public function getDefaultRepositoryClassName(): string
     {
         return $this->offsetExists('defaultRepositoryClassName') ? $this->offsetGet('defaultRepositoryClassName') : DocumentRepository::class;
+    }
+
+    public function getDriverOptions()
+    {
+        return $this->offsetExists('driverOptions') ? $this->offsetGet('driverOptions') : [
+            'typeMap' => DocumentManager::CLIENT_TYPEMAP
+        ];
     }
 }

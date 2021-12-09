@@ -23,22 +23,22 @@ return [
 <?php
 
 return [
-    'uri' => 'mongodb://mongodb:27017',
-    'options' => [],
-    
-    'defaultDatabase' =>  'db',
-    
-    'typeMap' => DocumentManager::CLIENT_TYPEMAP,
-    
-    'proxyDir' => '/runtime/doctrine/proxies',
-    'proxyNamespace' => 'DoctrineProxies',
-    'autoGenerateProxyClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
-    
-    'hydratorDir' => '/runtime/doctrine/hydrators',
-    'hydratorNamespace' => 'DoctrineHydrators',
-    'autoGenerateHydratorClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
-    
-    'defaultRepositoryClassName' => DocumentRepository::class,
+        'uri' => 'mongodb://mongodb:27017',
+        'uriOptions' => [],
+        'defaultDatabase' =>  'db',
+        'driverOptions' => [
+            'typeMap' => DocumentManager::CLIENT_TYPEMAP,
+        ],
+        
+        'proxyDir' => '/runtime/doctrine/proxies',
+        'proxyNamespace' => 'DoctrineProxies',
+        'autoGenerateProxyClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
+        
+        'hydratorDir' => '/runtime/doctrine/hydrators',
+        'hydratorNamespace' => 'DoctrineHydrators',
+        'autoGenerateHydratorClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
+        
+        'defaultRepositoryClassName' => DocumentRepository::class,
 ];
 
 

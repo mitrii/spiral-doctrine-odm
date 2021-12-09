@@ -71,12 +71,6 @@ class DoctrineOdmBootloader extends Bootloader
 
     private function initMongoClient(DoctrineOdmConfig $config): Client
     {
-        return new Client(
-            $config->getUri(),
-            $config->getUriOptions(),
-            [
-                'typeMap' => $config->getTypeMap(),
-            ]
-        );
+        return new Client($config->getUri(), $config->getUriOptions(), $config->getDriverOptions());
     }
 }
