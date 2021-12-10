@@ -19,6 +19,7 @@ use Spiral\Boot\FinalizerInterface;
 use Spiral\Console\Console;
 use Spiral\Core\Container;
 use MongoDB\Client;
+use Symfony\Component\Console\Application;
 
 class DoctrineOdmBootloader extends Bootloader
 {
@@ -62,12 +63,13 @@ class DoctrineOdmBootloader extends Bootloader
             return DocumentManager::create($client, $doctrineConfig);
         });
 
-
-
-        $console->getApplication()->getHelperSet()->set(
-            new DocumentManagerHelper($container->get(DocumentManager::class)),
-            'documentManager'
-        );
+        $application = $container->get(Application::class);
+        if ($application instanceof Application) {
+            $console->getApplication()->getHelperSet()->set(
+                new DocumentManagerHelper($container->get(DocumentManager::class)),
+                'documentManager'
+            );
+        }
 
     }
 
