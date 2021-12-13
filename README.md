@@ -47,7 +47,7 @@ return [
 ### Add Doctrine console commands
 
 ```php
-// config/console.php
+// app/config/console.php
 
 //...
 
