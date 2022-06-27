@@ -30,6 +30,7 @@ class DoctrineOdmConfig extends InjectableConfig
         'driverOptions' => [
             'typeMap' => DocumentManager::CLIENT_TYPEMAP,
         ],
+        'mappingDriver' => AttributeDriver::class,
         'proxyDir' => '/runtime/doctrine/proxies',
         'proxyNamespace' => 'DoctrineProxies',
         'autoGenerateProxyClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
