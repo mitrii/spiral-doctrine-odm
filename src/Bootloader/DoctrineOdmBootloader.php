@@ -6,6 +6,7 @@ namespace Mitrii\Spiral\Doctrine\ODM\Bootloader;
 
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper;
 use Mitrii\Spiral\Doctrine\ODM\Config\DoctrineOdmConfig;
@@ -53,10 +54,10 @@ class DoctrineOdmBootloader extends Bootloader
 
             $doctrineConfig->setDefaultDB($config->getDefaultDatabase());
 
-            $mappingDriver = $container->make($config->getMappingDriver());
+            $mappingDriver = $config->getMappingDriver();
 
             $doctrineConfig->setMetadataDriverImpl(
-                $mappingDriver::create($dirs->get('root') . $config->getDocumentsDir()));
+                call_user_func([$mappingDriver, 'create'], $dirs->get('root') . $config->getDocumentsDir()));
 
             $doctrineConfig->setDefaultDocumentRepositoryClassName($config->getDefaultRepositoryClassName());
 
