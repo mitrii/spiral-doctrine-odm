@@ -57,7 +57,8 @@ class DoctrineOdmBootloader extends Bootloader
             $mappingDriver = $config->getMappingDriver();
 
             $doctrineConfig->setMetadataDriverImpl(
-                call_user_func([$mappingDriver, 'create'], $dirs->get('root') . $config->getDocumentsDir()));
+                call_user_func($mappingDriver . '::create',
+                    $dirs->get('root') . $config->getDocumentsDir()));
 
             $doctrineConfig->setDefaultDocumentRepositoryClassName($config->getDefaultRepositoryClassName());
 

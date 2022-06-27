@@ -57,11 +57,8 @@ class DoctrineOdmConfig extends InjectableConfig
 
     public function getMappingDriver(): string
     {
-        $defaultMappingDriver = AnnotationDriver::class;
-
-        if (! $this->offsetExists('mappingDriver') ||
-            (! $this->offsetGet('mappingDriver') instanceof AnnotationDriver)) {
-            return $defaultMappingDriver;
+        if (! $this->offsetExists('mappingDriver')) {
+            return AnnotationDriver::class;
         }
 
         return $this->offsetGet('mappingDriver');
