@@ -1,25 +1,24 @@
 <?php
-/**
- * {project-name}
- *
- * @author {author-name}
- */
+
 declare(strict_types=1);
 
 namespace Mitrii\Spiral\Doctrine\ODM\Bootloader;
 
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper;
 use Mitrii\Spiral\Doctrine\ODM\Config\DoctrineOdmConfig;
+use MongoDB\Client;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Console\Console;
 use Spiral\Core\Container;
-use MongoDB\Client;
 use Symfony\Component\Console\Application;
+use Throwable;
 
 class DoctrineOdmBootloader extends Bootloader
 {
@@ -27,10 +26,11 @@ class DoctrineOdmBootloader extends Bootloader
         Client::class => [self::class, 'initMongoClient'],
     ];
 
-    protected const SINGLETONS = [];
-
-    protected const DEPENDENCIES = [];
-
+    /**
+     * @throws Throwable
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function boot(Container $container, Console $console): void
     {
         $container->bindSingleton(DocumentManager::class, function (
@@ -42,6 +42,7 @@ class DoctrineOdmBootloader extends Bootloader
         )
         {
             $doctrineConfig = new Configuration();
+
             $doctrineConfig->setProxyDir($dirs->get('root') . $config->getProxyDir());
             $doctrineConfig->setProxyNamespace($config->getProxyNamespace());
             $doctrineConfig->setAutoGenerateProxyClasses($config->getAutoGenerateProxyClasses());
@@ -51,7 +52,11 @@ class DoctrineOdmBootloader extends Bootloader
             $doctrineConfig->setAutoGenerateHydratorClasses($config->getAutoGenerateHydratorClasses());
 
             $doctrineConfig->setDefaultDB($config->getDefaultDatabase());
-            $doctrineConfig->setMetadataDriverImpl(AnnotationDriver::create($dirs->get('root') . $config->getDocumentsDir()));
+
+            $mappingDriver = $container->make($config->getMappingDriver());
+
+            $doctrineConfig->setMetadataDriverImpl(
+                $mappingDriver::create($dirs->get('root') . $config->getDocumentsDir()));
 
             $doctrineConfig->setDefaultDocumentRepositoryClassName($config->getDefaultRepositoryClassName());
 
@@ -70,9 +75,7 @@ class DoctrineOdmBootloader extends Bootloader
                 'documentManager'
             );
         }
-
     }
-
 
     private function initMongoClient(DoctrineOdmConfig $config): Client
     {
