@@ -29,6 +29,7 @@ return [
         'driverOptions' => [
             'typeMap' => DocumentManager::CLIENT_TYPEMAP,
         ],
+        'mappingDriver' => \Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver::class,
         
         'proxyDir' => '/runtime/doctrine/proxies',
         'proxyNamespace' => 'DoctrineProxies',

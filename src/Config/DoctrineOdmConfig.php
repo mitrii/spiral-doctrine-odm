@@ -10,6 +10,8 @@ namespace Mitrii\Spiral\Doctrine\ODM\Config;
 
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Spiral\Core\InjectableConfig;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 
@@ -28,6 +30,7 @@ class DoctrineOdmConfig extends InjectableConfig
         'driverOptions' => [
             'typeMap' => DocumentManager::CLIENT_TYPEMAP,
         ],
+        'mappingDriver' => AttributeDriver::class,
         'proxyDir' => '/runtime/doctrine/proxies',
         'proxyNamespace' => 'DoctrineProxies',
         'autoGenerateProxyClasses' => Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
@@ -50,6 +53,15 @@ class DoctrineOdmConfig extends InjectableConfig
     public function getDefaultDatabase(): string
     {
         return $this->offsetExists('defaultDatabase') ? $this->offsetGet('defaultDatabase') : 'db';
+    }
+
+    public function getMappingDriver(): string
+    {
+        if (! $this->offsetExists('mappingDriver')) {
+            return AnnotationDriver::class;
+        }
+
+        return $this->offsetGet('mappingDriver');
     }
 
     public function getDocumentsDir(): string

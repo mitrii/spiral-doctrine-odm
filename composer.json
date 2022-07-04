@@ -10,9 +10,9 @@
     }
   ],
   "require": {
-    "php": ">=7.4.0",
-    "doctrine/mongodb-odm": "^2.3",
-    "spiral/framework": "^2.8"
+    "php": ">=8.0",
+    "doctrine/mongodb-odm": "^2.4",
+    "spiral/framework": "^2.9"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest"
@@ -20,6 +20,11 @@
   "autoload": {
     "psr-4": {
       "Mitrii\\Spiral\\Doctrine\\ODM\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "spiral/composer-publish-plugin": true
     }
   }
 }
