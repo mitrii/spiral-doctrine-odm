@@ -6,8 +6,6 @@ namespace Mitrii\Spiral\Doctrine\ODM\Bootloader;
 
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Tools\Console\Helper\DocumentManagerHelper;
 use Mitrii\Spiral\Doctrine\ODM\Config\DoctrineOdmConfig;
 use MongoDB\Client;
